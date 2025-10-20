@@ -1,9 +1,18 @@
 <div class="evento-container">
+  <div *ngIf="editing" class="edit-warning">
+    🔧 Estás editando el evento seleccionado. Haz clic en "Cancelar edición" si quieres crear uno nuevo.
+  </div>
+  
   <!-- Formulario de evento -->
   <div class="evento-form">
     <form (ngSubmit)="onSubmit()">
+
       <div class="form-header">
-        <h2>Crear nuevo evento</h2>
+        <h2 *ngIf="!editing">Crear nuevo evento</h2>
+        <h2 *ngIf="editing">✏️ Editar evento</h2>
+        <button *ngIf="editing" type="button" class="btn-cancel" (click)="cancelEdit()">
+          Cancelar edición
+        </button>
         <button type="button" class="btn-back" (click)="goHome()">
           ← Volver a Home
         </button>
@@ -54,7 +63,7 @@
             <div class="schedule-preview">
               <strong>Seleccionado: </strong>
               <span *ngIf="newEvent.schedule; else noHorario">
-                {{ getScheduleText(newEvent) }}
+                {{ formatSchedule(newEvent.schedule) }}
               </span>
               <ng-template #noHorario><em>Sin horario establecido</em></ng-template>
             </div>
@@ -173,9 +182,22 @@
 
         <div class="actions">
           <button (click)="openDeleteModal(i)">🗑️ Eliminar Evento</button>
+          <button (click)="startEdit(i)">✏️ Editar</button>
         </div>
       </li>
     </ul>
+  </div>
+</div>
+
+<!-- Modal actualización -->
+<div class="modal-overlay" *ngIf="showUpdateModal">
+  <div class="modal">
+    <h3>¿Confirmar actualización?</h3>
+    <p>Se guardarán los cambios del evento en el sistema.</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="closeUpdateModal()">Cancelar</button>
+      <button class="btn-confirm" (click)="confirmarUpdate()">Actualizar</button>
+    </div>
   </div>
 </div>
 

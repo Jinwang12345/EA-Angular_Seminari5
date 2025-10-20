@@ -1,0 +1,100 @@
+<div class="register-container">
+  <div class="register-card">
+    <div class="register-header">
+      <h2>Crear cuenta</h2>
+      <p>Completa el formulario para registrarte</p>
+    </div>
+
+    <form (ngSubmit)="onRegister()" class="register-form">
+      <!-- Nombre de usuario -->
+      <div class="form-group">
+        <label for="username">Nombre de usuario</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          [(ngModel)]="registerData.username"
+          placeholder="Ej: juan_perez"
+          [disabled]="isLoading"
+          required
+        />
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="gmail">Correo electrónico</label>
+        <input
+          type="email"
+          id="gmail"
+          name="gmail"
+          [(ngModel)]="registerData.gmail"
+          placeholder="tu@email.com"
+          [disabled]="isLoading"
+          required
+        />
+      </div>
+
+      <!-- Contraseña -->
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          [(ngModel)]="registerData.password"
+          placeholder="Mínimo 6 caracteres"
+          [disabled]="isLoading"
+          required
+        />
+      </div>
+
+      <!-- Confirmar contraseña -->
+      <div class="form-group">
+        <label for="confirmPassword">Confirmar contraseña</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          name="confirmPassword"
+          [(ngModel)]="registerData.confirmPassword"
+          placeholder="Repite tu contraseña"
+          [disabled]="isLoading"
+          required
+        />
+      </div>
+
+      <!-- Mensajes de error/éxito -->
+      <div *ngIf="errorMessage" class="error-message">
+        ⚠️ {{ errorMessage }}
+      </div>
+
+      <div *ngIf="successMessage" class="success-message">
+        ✅ {{ successMessage }}
+      </div>
+
+      <!-- Botones -->
+      <div class="button-group">
+        <button 
+          type="submit" 
+          class="btn-register"
+          [disabled]="isLoading"
+        >
+          <span *ngIf="!isLoading">Crear cuenta</span>
+          <span *ngIf="isLoading">Registrando...</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="btn-back"
+          (click)="goToLogin()"
+          [disabled]="isLoading"
+        >
+          Volver al login
+        </button>
+      </div>
+    </form>
+
+    <div class="login-link">
+      <p>¿Ya tienes una cuenta? <a routerLink="/login">Inicia sesión aquí</a></p>
+    </div>
+  </div>
+</div>

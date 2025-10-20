@@ -69,7 +69,7 @@ export class UsuarisComponent implements OnInit {
       next: (evts) => {
         this.todosEventos = evts.map(e => ({
           ...e,
-          schedule: Array.isArray(e.schedule) ? e.schedule : (e.schedule ? [e.schedule as any] : []),
+          // Elimina esta conversión a array - schedule ya es string
           participantes: Array.isArray((e as any).participantes) ? (e as any).participantes : ((e as any).participants || [])
         }));
         this.eventosById.clear();

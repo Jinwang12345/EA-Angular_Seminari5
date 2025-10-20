@@ -25,7 +25,14 @@
   border-color: var(--primary-500);
   transform: translateY(-1px);
 }
-
+.edit-warning {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+}
 /* Formulario de evento */
 .evento-form {
   background: var(--surface-light);

@@ -6,11 +6,16 @@ export interface User {
   _id: string;
   username: string;
   gmail: string;
-  birthday: Date;
+  birthday?: string | Date;
   eventos: string[];
 }
 
 export interface LoginResponse {
+  message: string;
+  user: User;
+}
+
+export interface RegisterResponse {
   message: string;
   user: User;
 }
@@ -24,30 +29,47 @@ export class AuthService {
   public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient) {
-    // Verificar si hay un usuario en localStorage al inicializar
-    const savedUser = localStorage.getItem('currentUser');
-    if (savedUser) {
-      this.currentUserSubject.next(JSON.parse(savedUser));
+    const saved = localStorage.getItem('currentUser');
+    if (saved) {
+      const u: User = JSON.parse(saved);
+      this.currentUserSubject.next(u);
     }
   }
 
+  /** LOGIN */
   login(username: string, password: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/user/auth/login`, {
       username,
       password
     }).pipe(
-      tap(response => {
-        if (response.user) {
-          localStorage.setItem('currentUser', JSON.stringify(response.user));
-          this.currentUserSubject.next(response.user);
-        }
-      })
+      tap(res => this.setCurrentUser(res.user))
     );
   }
 
+  /** REGISTRO (nuevo) */
+  register(username: string, gmail: string, password: string, birthday?: string): Observable<RegisterResponse> {
+    return this.http.post<RegisterResponse>(`${this.apiUrl}/user/auth/register`, {
+      username,
+      gmail,
+      password,
+      birthday
+    }).pipe(
+      tap(res => this.setCurrentUser(res.user))
+    );
+  }
+
+  /** Utilidad para sincronizar estado/localStorage */
+  private setCurrentUser(user: User | null) {
+    if (user) {
+      localStorage.setItem('currentUser', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('currentUser');
+    }
+    this.currentUserSubject.next(user);
+  }
+
   logout(): void {
-    localStorage.removeItem('currentUser');
-    this.currentUserSubject.next(null);
+    this.setCurrentUser(null);
   }
 
   getCurrentUser(): User | null {
@@ -58,7 +80,7 @@ export class AuthService {
     return !!this.currentUserSubject.value;
   }
 
-  // Método para crear admin (solo desarrollo)
+  // Solo desarrollo
   createAdminUser(): Observable<any> {
     return this.http.post(`${this.apiUrl}/user/auth/create-admin`, {});
   }
